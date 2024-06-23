@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Mall {
+    uint256 public productPrice = 100;
+    uint256 public stock = 9;
+    address public owner;
+
+    // Event to notify about price changes
+    event PriceChanged(uint256 newPrice);
+
+    // Event to notify about stock changes
+    event StockChanged(uint256 newStock);
+
+    // Modifier to restrict access to the owner
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Caller is not the owner");
+        _;
+    }
+
+    constructor() {
+        // Set the contract deployer as the owner
+        owner = msg.sender;
+    }
+
+    // Function to set the price for electronics
+    function setElectronicsPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 500, "Price for electronics must be above 500");
+
+        productPrice = newPrice;
+        emit PriceChanged(newPrice);
+    }
+
+    // Function to set the price for clothing
+    function setClothingPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 100, "Price for clothing must be above 100");
+
+        productPrice = newPrice;
+        emit PriceChanged(newPrice);
+    }
+
+    // Function to set the price for groceries
+    function setGroceryPrice(uint256 newPrice) external onlyOwner {
+        require(newPrice > 50, "Price for groceries must be above 50");
+
+        productPrice = newPrice;
+        emit PriceChanged(newPrice);
+    }
+
+    // Function to check minimum stock availability
+    function checkMinimumStock() external view {
+        assert(stock >= 10); // This should always be true
+    }
+
+    // Function to update stock
+    function updateStock(uint256 newStock) external onlyOwner {
+        if (newStock < 5) {
+            revert("Stock cannot be less than 5 units.");
+        }
+        stock = newStock;
+        emit StockChanged(newStock);
+    }
+}
